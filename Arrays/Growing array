@@ -1,0 +1,42 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct vector {
+	char** arr;
+	int size;
+}vect;
+
+vect* a[1000001];
+
+int main() {
+	freopen("input.txt", "r", stdin);
+
+	int N;
+	scanf("%d", &N);
+	for (int i = 0; i < N; i++) {
+		int key;
+		char* str = calloc(8, sizeof(char));
+		scanf("%d %s", &key, str);
+		if (!a[key]) {
+			a[key] = malloc(sizeof(vect));
+			a[key]->size = 0;
+			a[key]->arr = (char**)malloc(sizeof(char*));
+			a[key]->arr[a[key]->size] = str;
+			a[key]->size++;
+		}
+		else {
+			a[key]->arr = (char**)realloc(a[key]->arr, sizeof(char*) * (a[key]->size + 1));
+			a[key]->arr[a[key]->size] = str;
+			a[key]->size++;
+		}
+	}
+	for (int i = 0; i < 1000001; i++) {
+		if (!a[i]) continue;
+		for (int j = 0; j < a[i]->size; j++) {
+			printf("%d %s\n", i, a[i]->arr[j]);
+			free(a[i]->arr[j]);
+		}
+		free(a[i]);
+	}
+	return 0;
+}
