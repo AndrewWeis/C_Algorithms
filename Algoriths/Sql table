@@ -1,0 +1,116 @@
+#Using mapping by using ash Table
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#define DATABASE_SIZE 100050
+#define NAME_SIZE 35
+
+typedef struct ActorBio {
+	char Name[NAME_SIZE];
+	int BirthYear;
+	char Country[15];
+} ActorBio;
+
+typedef struct ActorInMovie {
+	char ActorName[NAME_SIZE];
+	char MovieName[25];
+} ActorMovie;
+
+typedef struct Vector {
+	int size;
+	int capacity;
+	ActorBio* data;
+} VectorAcBio;
+
+typedef struct {
+	VectorAcBio records;
+} hashElem;
+
+hashElem DataBase_bio[DATABASE_SIZE]; //hashTable
+
+void printData(ActorBio* bio, ActorMovie* mov) {
+	printf("\"%s\" %d \"%s\" \"%s\" \"%s\"\n", bio->Name, bio->BirthYear, bio->Country, mov->ActorName, mov->MovieName);
+}
+
+uint64_t getElemHash(const char* num, int len) {
+	uint64_t hash = 0;
+
+	if ((int)*num == 0)
+		hash = 10;
+
+	for (int i = 0; i < len && num[i] != 0; ++i) {
+		hash += num[i];
+		hash += (hash << 10u);
+		hash ^= (hash >> 6u);
+	}
+
+	hash += (hash << 3u);
+	hash ^= (hash >> 11u);
+	hash += (hash << 15u);
+	return hash;
+}
+
+void pushBackTo(VectorAcBio* vec, ActorBio* actor) {
+
+	if (vec->size + 1 > vec->capacity) {
+		vec->data = realloc(vec->data, (vec->size * 2 + 1) * sizeof(ActorBio));
+		vec->capacity = vec->size * 2 + 1;
+	}
+
+	vec->data[vec->size++] = *actor;
+
+}
+
+void putHashTable(hashElem* table, ActorBio* actor) {
+
+	uint64_t hash = getElemHash((char*)actor->Name, NAME_SIZE) % DATABASE_SIZE;
+
+	pushBackTo(&table[hash].records, actor);
+}
+
+void printResultDataBase(hashElem* table, ActorMovie* MovieData) {
+
+	uint64_t hash = getElemHash(MovieData->ActorName, NAME_SIZE) % DATABASE_SIZE;
+
+	for (int i = 0; i < table[hash].records.size; i++) {
+		//Если имена в полях совпадают - печатаем.
+		if (!strcmp(MovieData->ActorName, table[hash].records.data[i].Name))
+			printData(&table[hash].records.data[i], MovieData);
+	}
+
+}
+
+int main() {
+	int N, M;
+	freopen("input.txt", "r", stdin);
+	freopen("output.txt", "w", stdout);
+
+	scanf("%d%*c", &N);
+
+	for (int i = 0; i < N; i++) {
+		
+		ActorBio Table1;
+		scanf("%*c%[^\"]%*c %d %*c%[^\"]%*c\n", Table1.Name, &Table1.BirthYear, Table1.Country);
+
+		//Добавляем поля в Хеш-таблицу, где ключ - это тимя актера.
+		putHashTable(DataBase_bio, &Table1);
+		printf("");
+	}
+
+	scanf("%d%*c", &M);
+
+	for (int i = 0; i < M; i++) {
+		
+		ActorMovie Table2;
+		scanf("%*c%[^\"]%*c %*c%[^\"]%*c\n", Table2.ActorName, &Table2.MovieName);
+
+		//Объединяем талицы и выводим через функцию printResultDataBase
+		printResultDataBase(DataBase_bio, &Table2);
+	}
+
+	return 0;
+}
