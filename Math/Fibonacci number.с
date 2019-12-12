@@ -1,0 +1,55 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+typedef struct LongNum_s {
+	int len;		 
+	int arr[500];	 
+} LongNum;
+int i = 0;
+int arr_ad[500];
+LongNum first = { 0, 0 };
+LongNum second = { 0, 0 };
+
+int add(int kolv) {  
+	int dig = 0, k = 0;
+	first.arr[0] = 1;
+	second.arr[0] = 1;
+	for (int s = 0; s < (kolv-2); s++)
+	{
+		k = 0;
+		for (int j = 0; j < 500; j++) {
+			for (k; k < 500; k++) {
+				arr_ad[k] = second.arr[k];
+			}
+			if (first.arr[j] + second.arr[j] > 9)
+			{
+				second.arr[j + 1]++;
+				dig = (first.arr[j] + second.arr[j]) % 10;
+				first.arr[j] = arr_ad[j];
+				second.arr[j] = dig;
+			}
+			else
+			{
+				dig = first.arr[j] + second.arr[j];
+				first.arr[j] = arr_ad[j];
+				second.arr[j] = dig;
+			}
+		}
+	}
+}
+
+int main() {
+	int n = 0, s = 0;
+	scanf("%d", &n);
+	add(n);
+
+	for (s = 499; s >= 0; s--) {
+		if (second.arr[s] != 0) {
+			break;
+		}
+	}
+
+	for (s; s >= 0; s--)
+		printf("%d", second.arr[s]);
+	return 0;
+}
