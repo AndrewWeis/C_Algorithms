@@ -3,59 +3,54 @@
 #include <stdlib.h>
 #include <string.h>
 
+void merge(int* a, int ak, int* b, int bk, int* res) {
+	int aid = 0, bid = 0;
+	while (aid < ak && bid < bk) {
+		if (a[aid] < b[bid]) {
+			res[aid + bid] = a[aid];
+			aid++;
+		}
+		else {
+			res[aid + bid] = b[bid];
+			bid++;
+		}
+	}
 
-#pragma pack(push, 1)
-typedef struct files {
-	char name[21]; // Имя файла, состоящее из латинских букв, цифр и символов точки.
-	unsigned long long int S; // Размер 𝑆𝑖 файла в байтах
-	char Dirictoria; // Байт равен 1, если файл на самом деле является директорией, и 0 иначе.
-	unsigned long long int C; // Момент времени 𝐶𝑖, когда файл был создан
-	unsigned long long int M; // Момент времени 𝑀𝑖, когда файл был изменён в последний раз
-	char hide; // Байт равен 1, если файл скрытый, и 0 иначе.
-} files;
-#pragma pack(pop)
+	while (aid < ak)
+		res[aid + bid] = a[aid++];
 
-files file[1002];
+	while (bid < bk)
+		res[aid + bid] = b[bid++];
+}
+
+void mergeSort(int ary[], int size) {
+	int* tmp = (int*)malloc(size * sizeof(int));
+	if (size <= 1)
+		return;
+	const int mid = size / 2;
+	mergeSort(ary, mid);
+	mergeSort(ary + mid, size - mid);
+	merge(ary, mid, ary + mid, size - mid, tmp);
+	memcpy(ary, tmp, size * sizeof(int));
+}
+
+int arr[500001] = { 0 };
 
 int main() {
-	long long int A; // не раньше этого момента времени
-	long long int B; //  искомый файл не модифицировался позже этого момента времени 
+	int N;
 	FILE* input = fopen("input.bin", "rb");
 	FILE* output = fopen("output.bin", "wb");
-	int number, sum = 0, N = 0;
-	int sorted[1001] = { 0 };
 
 	fread(&N, sizeof(int), 1, input);
-	fread(&A, sizeof(long long int), 1, input);
-	fread(&B, sizeof(long long int), 1, input);
 
-	for (int i = 0; i < N; i++) 
-		fread(&file[i], sizeof(files), 1, input);
-	
-
-	for (int i = 0; i < N - 1; i++) {
-		for (int j = i + 1; j < N; j++) {
-
-			if (strcmp(file[i].name, file[j].name) > 0) {
-				file[1001] = file[i];
-				file[i] = file[j];
-				file[j] = file[1001];
-			}
-		}
-	}
-
-	int k = 0;
 	for (int i = 0; i < N; i++) {
-		int hide = file[i].hide;
-		int dirictoria = file[i].Dirictoria;
-		if (dirictoria == 0 && hide == 0 && file[i].C >= A && file[i].M <= B) {
-			sorted[k] = i;
-			k++;
-		}
+		fread(&arr[i], sizeof(int), 1, input);
 	}
 
-	for (int i = 0; i < k; i++)
-		fwrite(&file[sorted[i]], sizeof(files), 1, output);
+	mergeSort(arr, N);
+
+	for (int i = 0; i < N; i++)
+		fwrite(&arr[i], sizeof(int), 1, output);
 
 	fclose(input);
 	fclose(output);
