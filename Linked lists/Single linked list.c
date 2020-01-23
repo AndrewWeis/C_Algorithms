@@ -4,9 +4,33 @@
 
 struct Node 
 {
-	int data;
-	struct Node* next;
+   int data;
+   struct Node* next;
 };
+
+void deleteNode(struct Node** head_ref, int key)
+{
+    struct Node* prev = NULL;
+    struct Node* temp = *head_ref;
+    
+    if (temp != NULL && temp->data == key)
+    {
+        *head_ref = temp->next;   
+        free(temp);               
+        return;
+    }
+
+    while (temp != NULL && temp->data != key)
+    {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) return;
+
+    prev->next = temp->next;
+    free(temp);
+}
 
 void push(struct Node** head_ref, int new_data)
 {
@@ -65,8 +89,10 @@ int main()
     append(&head, 5);
     push(&head, 1);
     insertAfter(head, 2);
-
     // head -> 1 -> 2 -> 3 -> 4 -> 5 -> NULL
+	
+    deleteNode(&head, 3);
+    // head -> 1 -> 2 -> 4 -> 5 -> NULL
 
     printf("Created Linked list is: ");
     printList(head);
