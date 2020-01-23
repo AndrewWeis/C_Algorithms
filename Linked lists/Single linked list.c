@@ -8,7 +8,34 @@ struct Node
    struct Node* next;
 };
 
-void deleteNode(struct Node** head_ref, int key)
+
+void deleteByPostion(struct Node** head_ref, int position)
+{
+    if (*head_ref == NULL)
+        return;
+    // first Node is position 0 
+    struct Node* temp = *head_ref;
+ 
+    if (position == 0)
+    {
+        *head_ref = temp->next;   
+        free(temp);              
+        return;
+    }
+
+    for (int i = 0; temp != NULL && i < position - 1; i++)
+        temp = temp->next;
+
+    if (temp == NULL || temp->next == NULL)
+        return;
+
+    struct Node* next = temp->next->next;
+
+    free(temp->next);
+    temp->next = next;  
+}
+
+void deleteByKey(struct Node** head_ref, int key)
 {
     struct Node* prev = NULL;
     struct Node* temp = *head_ref;
@@ -91,9 +118,11 @@ int main()
     insertAfter(head, 2);
     // head -> 1 -> 2 -> 3 -> 4 -> 5 -> NULL
 	
-    deleteNode(&head, 3);
+    deleteByKey(&head, 3);
     // head -> 1 -> 2 -> 4 -> 5 -> NULL
-
+    deleteByPostion(&head, 2);
+    // head -> 1 -> 2 -> 5 -> NULL
+	
     printf("Created Linked list is: ");
     printList(head);
     printf("\n\n\n\n\n");
