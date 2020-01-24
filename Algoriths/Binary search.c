@@ -1,6 +1,5 @@
-#include <iostream> 
-
-using namespace std;
+#include <stdio.h> 
+#include <stdlib.h>
 
 // A recursive binary search function. It returns 
 // location of x in given array arr[l..r] is present, 
@@ -31,9 +30,9 @@ int main()
     int result = binarySearch(arr, 0, n - 1, x);
     
     if (result == -1)
-        cout << "Element is not present in array";
+        printf(Element is not present in array");
     else
-        cout << "Element is present at index " << result;
+        printf("Element is present at index ", result);
     
     return 0;
 }
