@@ -1,0 +1,6 @@
+
+cl -c zlib\*c
+cl -c zlib\minizip\unzip.c zlib\minizip\ioapi.c -D USE_CRYPT -I zlib
+lib *obj /out:mylib.lib
+cl test.c mylib.lib -I zlib -I zlib\minizip -Fechecked_solution.exe
+
