@@ -17,16 +17,19 @@ struct adjList
 	struct growingArr* grArr;
 };
 
-struct growingArr 
+struct growingArr
 {
 	int vertice;
 };
 
 struct Graph* createGraph(int V);
+void freeGraph(struct Graph* graph, int V);
 void addToList(struct Graph* graph, int from, int to);
 void printAdjList(struct Graph* graph, int V);
+
 void DFS(struct Graph* graph, int s, int V);
 void DFSUtil(struct Graph* graph, int s, int visited[]);
+
 
 struct Graph* createGraph(int V)
 {
@@ -34,8 +37,7 @@ struct Graph* createGraph(int V)
 	graph->V = V;
 	graph->adj = (struct adjList*)malloc(sizeof(struct adjList) * V);
 
-	// inizialize list of adjective vertice to i;  ex 0: 1; 2;
-	for (int i = 0; i < V; i++) 
+	for (int i = 0; i < V; i++)
 	{
 		graph->adj[i].grArr = (struct adjList*)malloc(sizeof(struct adjList) * 2);
 		graph->adj[i].capacity = 2;
@@ -45,25 +47,24 @@ struct Graph* createGraph(int V)
 	return graph;
 }
 
-// add vertices into Adjacency list; 
 void addToList(struct Graph* graph, int from, int to)
 {
-	int cur_size = graph->adj[from].cur_size; // size of growing array whose index is from
-	int capacity = graph->adj[from].capacity; // max size of growing array whose index is from
+	int cur_size = graph->adj[from].cur_size; 
+	int capacity = graph->adj[from].capacity; 
 
 	if (cur_size == capacity)
 	{
 		struct growingArr* grArr = (struct growingArr*)malloc(sizeof(struct growingArr*) * capacity * 2);
 
-		for (int i = 0; i < cur_size; i++)  // copy all data from old arr to new growing arr
+		for (int i = 0; i < cur_size; i++)  
 			grArr[i] = graph->adj[from].grArr[i];
 
-		grArr[cur_size].vertice = to;  // add new vertice into new growing arr
+		grArr[cur_size].vertice = to;  
 
-		free(graph->adj[from].grArr);  // free memory in old arr
+		free(graph->adj[from].grArr);  
 
-		graph->adj[from].grArr = grArr;  // change pointer to new arr
-		graph->adj[from].cur_size++;     
+		graph->adj[from].grArr = grArr;
+		graph->adj[from].cur_size++;
 		graph->adj[from].capacity *= 2;
 	}
 	else
@@ -90,8 +91,10 @@ void DFS(struct Graph* graph, int s, int V)
 	int* visited = (int*)malloc(sizeof(int) * V);
 	for (int i = 0; i < V; i++)
 		visited[i] = 0;
-	
+
 	DFSUtil(graph, s, visited);
+
+	free(visited);
 }
 
 void DFSUtil(struct Graph* graph, int s, int visited[])
@@ -106,12 +109,19 @@ void DFSUtil(struct Graph* graph, int s, int visited[])
 			DFSUtil(graph, graph->adj[s].grArr[j].vertice, visited);
 }
 
-int main ()
+void freeGraph(struct Graph* graph, int V)
+{
+	for (int i = 0; i < V; i++)
+		free(graph->adj[i].grArr);
+	free(graph->adj);
+	free(graph);
+}
+
+int main()
 {
 	int V = 7;
 	struct Graph* graph = createGraph(V);
-	
-	printf("Incident / Adjacency List: \n");
+
 	addToList(graph, 1, 2);
 	addToList(graph, 1, 3);
 	addToList(graph, 3, 5);
@@ -120,11 +130,11 @@ int main ()
 	addToList(graph, 4, 5);
 	addToList(graph, 5, 6);
 	addToList(graph, 4, 6);
-	printAdjList(graph, V);
 
-	printf("\nDFS: ");
+	printf("DFS: ");
 	DFS(graph, 1, V);
-
+	
+	freeGraph(graph, V);
 
 	return 0;
 }
