@@ -29,7 +29,9 @@ struct growingArr
 struct Graph* createGraph(int V);
 void addToList(struct Graph* graph, int from, int to);
 void printAdjList(struct Graph* graph, int V);
-void DFSUtil(struct Graph* graph, int s, int visited[]);
+void DFSUtil(struct Graph* graph, int** tc, int s, int v)
+void transitiveClosure(struct Graph* graph, int** tc, int V);
+void createTranClosure(int V, int** tc);
 
 struct Graph* createGraph(int V)
 {
