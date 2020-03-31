@@ -22,16 +22,18 @@ struct growingArr
 };
 
 struct Graph* createGraph(int V);
+void freeGraph(struct Graph* graph, int V);
 void addToList(struct Graph* graph, int from, int to);
 void printAdjList(struct Graph* graph, int V);
+
 int BFS(struct Graph* graph, int s, int V, int level);
+
 struct Queue* createQueue(unsigned capacity);
 int isFull(struct Queue* queue);
 int isEmpty(struct Queue* queue);
 void enqueue(struct Queue* queue, int item);
 int dequeue(struct Queue* queue);
 int front(struct Queue* queue);
-void freeGraph(struct Graph* graph, int V);
 
 struct Queue
 {
@@ -221,9 +223,9 @@ int main()
 }
 
 /*
-		(0)     -- level 0
-	  /		\ 
+	    (0)     -- level 0
+	  /	\ 
 	(1)     (2) -- level 1
-	 |	  /  | 
-    (3)	(5)	(4) -- level 2
+	 |    /  | 
+        (3) (5)	(4) -- level 2
 */
