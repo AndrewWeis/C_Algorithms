@@ -26,7 +26,7 @@ struct Graph* createGraph(int V);
 void freeGraph(struct Graph* graph, int V);
 void addToList(struct Graph* graph, int from, int to);
 void printAdjList(struct Graph* graph, int V);
-
+ 
 void DFS(struct Graph* graph, int s, int V);
 void DFSUtil(struct Graph* graph, int s, int visited[]);
 
