@@ -44,7 +44,7 @@ struct Queue* createQueue(unsigned capacity)
 	struct Queue* queue = (struct Queue*) malloc(sizeof(struct Queue));
 	queue->capacity = capacity;
 	queue->front = queue->size = 0;
-	queue->rear = capacity - 1;  // This is important, see the enqueue 
+	queue->rear = capacity - 1;   
 	queue->array = (int*)malloc(queue->capacity * sizeof(int));
 	return queue;
 }
@@ -192,7 +192,7 @@ int main ()
 	addToList(graph, 5, 6);
 	addToList(graph, 4, 6);
 	printAdjList(graph, V);
-  printf("\nBFS: ");
+  	printf("\nBFS: ");
 	BFS(graph, 1, V);
 
 
