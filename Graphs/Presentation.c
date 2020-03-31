@@ -16,7 +16,7 @@ struct adjList
 	struct growingArr* grArr;
 };
 
-struct growingArr 
+struct growingArr
 {
 	int vertice;
 };
@@ -24,6 +24,8 @@ struct growingArr
 struct Graph* createGraph(int V);
 void addToList(struct Graph* graph, int from, int to);
 void printAdjList(struct Graph* graph, int V);
+void freeGraph(struct Graph* graph, int V);
+
 
 struct Graph* createGraph(int V)
 {
@@ -32,7 +34,7 @@ struct Graph* createGraph(int V)
 	graph->adj = (struct adjList*)malloc(sizeof(struct adjList) * V);
 
 	// inizialize list of adjective vertice to i;  ex 0: 1; 2;
-	for (int i = 0; i < V; i++) 
+	for (int i = 0; i < V; i++)
 	{
 		graph->adj[i].grArr = (struct adjList*)malloc(sizeof(struct adjList) * 2);
 		graph->adj[i].capacity = 2;
@@ -60,7 +62,7 @@ void addToList(struct Graph* graph, int from, int to)
 		free(graph->adj[from].grArr);  // free memory in old arr
 
 		graph->adj[from].grArr = grArr;  // change pointer to new arr
-		graph->adj[from].cur_size++;     
+		graph->adj[from].cur_size++;
 		graph->adj[from].capacity *= 2;
 	}
 	else
@@ -81,11 +83,19 @@ void printAdjList(struct Graph* graph, int V)
 	}
 }
 
-int main ()
+void freeGraph(struct Graph* graph, int V)
+{
+	for (int i = 0; i < V; i++)
+		free(graph->adj[i].grArr);
+	free(graph->adj);
+	free(graph);
+}
+
+int main()
 {
 	int V = 7;
 	struct Graph* graph = createGraph(V);
-	
+
 	printf("Incident / Adjacency List: \n");
 	addToList(graph, 1, 2);
 	addToList(graph, 1, 3);
@@ -96,6 +106,8 @@ int main ()
 	addToList(graph, 5, 6);
 	addToList(graph, 4, 6);
 	printAdjList(graph, V);
+
+	freeGraph(graph, V);
 
 	return 0;
 }
