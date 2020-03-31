@@ -195,6 +195,17 @@ int main ()
   	printf("\nBFS: ");
 	BFS(graph, 1, V);
 
-
 	return 0;
 }
+
+/*        (1)		Adjective / Incident List
+	/     \		1: 2; 3;
+      (2)     (3)	2: 4; 5;
+       |  \     |	3: 5;
+       |     \  |	4: 5; 6;
+      (4) ---- (5)	5: 6;
+         \    /
+	   (6)
+	   
+BFS: 1 2 3 5 4 6
+*/
